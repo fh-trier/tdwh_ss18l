@@ -1,6 +1,6 @@
 # Tutorium Data-Warehouse SS18
 
-![travis](https://travis-ci.com/volker-raschek/tdwh_ss18.svg?branch=master)
+![travis](https://travis-ci.com/volker-raschek/tdwh_ss18l.svg?branch=master)
 
 Konzeptuelle Grundlagen von Data- Warehouse- Systemen
 + Modellierung: Star- Schema, Snowflake- Schema
