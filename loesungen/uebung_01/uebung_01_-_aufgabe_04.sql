@@ -1,0 +1,5 @@
+ALTER TABLE Mitarbeiter
+ADD CONSTRAINT "C_MITARBEITER"
+CHECK (
+  gehalt >= 0
+);
