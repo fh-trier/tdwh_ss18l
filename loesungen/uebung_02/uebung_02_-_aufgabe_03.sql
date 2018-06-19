@@ -1,67 +1,69 @@
--- Drop old types
-DROP TYPE t_customer;
-DROP TYPE o_customer;
+-- Delete
+DROP TYPE typeCustomerAsNestedTable;
+DROP TYPE typeCustomer;
 
--- create or replace type
-CREATE OR REPLACE TYPE o_customer AS OBJECT (
-  customer_id NUMBER,
-  name VARCHAR2(100),
-  country VARCHAR2(50),
-  order_total NUMBER
+-- CREATE
+CREATE TYPE typeCustomer AS OBJECT (
+  CUSTOMER_ID NUMBER NULL,
+  CUSTOMER_FIRST_NAME VARCHAR2(50) NULL,
+  CUSTOMER_LAST_NAME VARCHAR2(50) NULL,
+  CUSTOMER_COUNTRY VARCHAR2(50) NULL,
+  ORDER_TOTAL NUMBER
 );
 /
 
--- create type as table of
-CREATE OR REPLACE TYPE t_customer AS TABLE OF o_customer;
+CREATE TYPE typeCustomerAsNestedTable AS TABLE OF typeCustomer;
 /
 
--- create procedure
-CREATE OR REPLACE function tf_customer (i_cur_cust IN sys_refcursor) RETURN t_customer
+CREATE OR REPLACE FUNCTION getCustomer(inCustomerCursor IN SYS_REFCURSOR) RETURN typeCustomerAsNestedTable
 AS
-  l_customer t_customer := t_customer();
-  rec_cust customers%ROWTYPE;
-  v_country countries.country_name%TYPE;
-  v_order_total NUMBER;
+
+  -- Declare
+  listCustomer typeCustomerAsNestedTable := typeCustomerAsNestedTable();
+  recCustomer customers%ROWTYPE;
+  vCountry countries.country_name%TYPE;
+  vSumOrderTotal orders.order_total%TYPE;
 BEGIN
+
   LOOP
-    FETCH i_cur_cust INTO rec_cust;
-    EXIT WHEN i_cur_cust%NOTFOUND;
+    FETCH inCustomerCursor INTO recCustomer;
+    EXIT WHEN inCustomerCursor%NOTFOUND;
 
-    SELECT SUM(order_total) INTO v_order_total
-    FROM orders
-    WHERE customer_id = rec_cust.customer_id;
-
-    SELECT country_name INTO v_country
+    -- Search after country_name for a customer
+    SELECT country_name INTO vCountry
     FROM countries
-    WHERE country_id = rec_cust.country_id;
+    WHERE country_id = recCustomer.country_id;
 
-    l_customer.EXTEND;
-    l_customer(l_customer.LAST) := o_customer(
-      rec_cust.customer_id,
-      rec_cust.cust_last_name || ', ' || rec_cust.cust_first_name,
-      v_country,
-      NVL(v_order_total, 0)
+    -- SUM Order total for a customer
+    SELECT NVL(SUM(o.order_total),0) INTO vSumOrderTotal
+    FROM orders o
+    WHERE o.customer_id = recCustomer.customer_id;
+
+    -- Add a new row into the table
+    listCustomer.EXTEND();
+    listCustomer(listCustomer.LAST) := typeCustomer(
+      recCustomer.customer_id,
+      recCustomer.cust_first_name,
+      recCustomer.cust_last_name,
+      vCountry,
+      vSumOrderTotal
     );
+
   END LOOP;
 
-  CLOSE i_cur_cust;
+  CLOSE inCustomerCursor;
 
-  RETURN l_customer;
-
-EXCEPTION
-  WHEN OTHERS THEN
-    RAISE_APPLICATION_ERROR(-20000, 'Error: ' || SUBSTR(sqlerrm, 1, 200));
+  RETURN listCustomer;
 END;
 /
 
--- Execute table function
+-- Abfrage
 SELECT *
 FROM TABLE(
-  tf_customer(
+  getCustomer(
     CURSOR(
       SELECT *
       FROM customers
-      WHERE customer_id < 200
-    )
+      WHERE customer_id <= 200)
   )
 );

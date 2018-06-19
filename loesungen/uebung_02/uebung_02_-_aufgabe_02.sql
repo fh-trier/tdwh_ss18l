@@ -1,53 +1,48 @@
--- Objekt: Channel
-CREATE OR REPLACE TYPE obj_channel AS OBJECT (
-  CHANNEL_CLASS_ID  NUMBER,
-  CHANNEL_CLASS     VARCHAR2(20),
-  CHANNEL_ID        NUMBER,
-  CHANNEL_DESC      VARCHAR2(20),
-  COUNT_ORDERS      NUMBER,
-  AVG_ORDER_TOTAL   NUMBER(38,2)
+-- Delete
+DROP TYPE typeChannelClassAsNestedTable;
+DROP TYPE typeChannelClass;
+
+-- CREATE
+CREATE TYPE typeChannelClass AS OBJECT (
+  CHANNEL_CLASS_ID NUMBER NULL,
+  CHANNEL_CLASS VARCHAR2(50) NULL,
+  CHANNEL_ID NUMBER NULL,
+  CHANNEL_DESC VARCHAR2(50) NULL,
+  COUNT_ORDERS NUMBER NULL,
+  AVG_ORDER_TOTAL NUMBER NULL
 );
+/
 
--- NestedTable: Channels
-CREATE OR REPLACE TYPE nt_channels AS TABLE OF obj_channel;
+CREATE TYPE typeChannelClassAsNestedTable AS TABLE OF typeChannelClass;
+/
 
--- Function: func_channel
-CREATE OR REPLACE FUNCTION func_channel(in_channel_class_id NUMBER) RETURN nt_channels
+CREATE OR REPLACE FUNCTION getChannelClass(inChannelClassId IN NUMBER) RETURN typeChannelClassAsNestedTable
 AS
 
-  listChannels nt_channels := nt_channels();
-
-  CURSOR curChannels IS
-    SELECT  c.channel_class_id,
-            c.channel_class,
-            c.channel_id,
-            c.channel_desc,
-            (
-              SELECT  COUNT(order_id)
-              FROM orders
-              WHERE channel_id = c.channel_id
-            ) AS "COUNT_ORDERS",
-            (
-              SELECT ROUND(AVG(SUM(unit_price * quantity)),2) AS durchschnitt
-              FROM orders o
-                INNER JOIN order_items oi ON o.order_id = oi.order_id
-              WHERE channel_id = c.channel_id
-              GROUP BY o.order_id
-            ) AS "AVG_ORDER_TOTAL"
-    FROM    channels c
-    WHERE   c.channel_class_id = in_channel;
-
-  vLoopIndex NUMBER(1) := 1;
+  -- Initialize
+  listChannelClass typeChannelClassAsNestedTable;
 
 BEGIN
-  FOR recChannel IN curChannels LOOP
-    listChannels.EXTEND;
-    listChannels(vLoopIndex) := recChannel;
-    vLoopIndex:= vLoopIndex + 1;
-  END LOOP;
+
+    SELECT
+      typeChannelClass(
+        c.channel_class_id,
+        c.channel_class,
+        c.channel_id,
+        c.channel_desc,
+        COUNT(o.order_id),
+        ROUND(AVG(o.order_total),2)
+      )
+    BULK COLLECT INTO listChannelClass
+    FROM channels c
+      INNER JOIN orders o ON (c.channel_id = o.channel_id)
+    WHERE channel_class_id = inChannelClassId
+    GROUP BY c.channel_class_id, c.channel_class, c.channel_id, c.channel_desc;
+
+    RETURN listChannelClass;
 END;
 /
 
 -- Abfrage
 SELECT *
-FROM TABLE(func_channel());
+FROM TABLE(getChannelClass(13));
