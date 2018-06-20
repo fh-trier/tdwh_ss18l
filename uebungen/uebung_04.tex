@@ -23,11 +23,69 @@ Gegeben sei folgender Aussschnitt aus einem bestehenden DWH:
   \small
   \begin{tabular}{|l|l|l|l|l|}
     \hline
-    \textbf{KundeDIMKey}  & \textbf{KundeId}        & \textbf{Nachname}       & \textbf{Geburt}             \\
+    \textbf{KundeDIMKey}          & \textbf{KundeId}                & \textbf{Nachname}                 & \textbf{Geburt}                       \\
     \hline
-    \textcolor{blue}{1}   & \textcolor{blue}{K01A}  & \textcolor{blue}{Meyer} & \textcolor{blue}{01.08.68}  \\
-    2                     & K02A                    & Bauer                   & 03.09.85                    \\
+    \textbf{\textcolor{blue}{1}}  & \textbf{\textcolor{blue}{K01A}} & \textbf{\textcolor{blue}{Meyer}}  & \textbf{\textcolor{blue}{01.08.68}}   \\
+    2                             & K02A                            & Bauer                             & 03.09.85                              \\
     \hline
   \end{tabular}
   \caption{Dimensionstabelle Kunde}
+\end{table}
+
+% ############################### Aufgabe 5a ##############################
+\subsection{SCD-Typ 1}
+\label{sec:uebung_05.aufgabe_1a}
+
+\begin{table}[H]
+  \centering
+  \ttfamily
+  \small
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{KundeDIMKey}  & \textbf{KundeId}  & \textbf{Nachname}                 & \textbf{Geburt} \\
+    \hline
+    1                     & K01A              & \textbf{\textcolor{red}{Schmitt}} & 01.08.68        \\
+    2                     & K02A              & Bauer                             & 03.09.85        \\
+    \hline
+  \end{tabular}
+  \caption{SCD-Typ 1 - Änderung überschreiben}
+\end{table}
+
+% ############################### Aufgabe 5b ##############################
+\subsection{SCD-Typ 2}
+\label{sec:uebung_05.aufgabe_1b}
+
+\begin{table}[H]
+  \centering
+  \ttfamily
+  \small
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+    \hline
+    \textbf{KundeDIMKey} & \textbf{KundeId} & \textbf{Nachname} & \textbf{Geburt} & \textbf{EffDatum} & \textbf{ExpDatum} & \textbf{CRIndikator} \\
+    \hline
+    1 & K01A  & \textbf{\textcolor{red}{Meyer}} & 01.08.68 & \textbf{\textcolor{red}{01.02.2007}} & \textbf{\textcolor{red}{22.05.2016}} & \textbf{\textcolor{red}{FALSE}} \\
+    2 & K02A & Bauer & 03.09.85 & 01.01.05 & & TRUE \\
+    \textbf{\textcolor{red}{3}} & \textbf{\textcolor{red}{K01A}}  & \textbf{\textcolor{red}{Schmitt}} & \textbf{\textcolor{red}{01.08.68}} & \textbf{\textcolor{red}{23.05.2016}} &  & \textbf{\textcolor{red}{TRUE}} \\
+    \hline
+  \end{tabular}
+  \caption{SCD-Typ 2 - Neue Zeile einfügen}
+\end{table}
+
+% ############################### Aufgabe 5c ##############################
+\subsection{SCD-Typ 3}
+\label{sec:uebung_05.aufgabe_1c}
+
+\begin{table}[H]
+  \centering
+  \ttfamily
+  \small
+  \begin{tabular}{|l|l|l|l|l|}
+    \hline
+    \textbf{KundeDIMKey}  & \textbf{KundeId}  & \textbf{Nachname}                 & \textbf{Geburt} & \textbf{NachnameAlt}            \\
+    \hline
+    1                     & K01A              & \textbf{\textcolor{red}{Schmitt}} & 01.08.68        & \textbf{\textcolor{red}{Meyer}} \\
+    2                     & K02A              & Bauer                             & 03.09.85        &                                 \\
+    \hline
+  \end{tabular}
+  \caption{SCD-Typ 3 - Neues Attribut einfügen}
 \end{table}
