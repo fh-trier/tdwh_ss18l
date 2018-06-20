@@ -1,8 +1,9 @@
-SELECT 
+CREATE OR REPLACE VIEW "REPORT_61" AS
+SELECT
   d.department_name AS "DEPARTMENT",
   l.city AS "CITY",
   c.country_name AS "COUNTRY",
-  COUNT(e.employee_id)
+  COUNT(e.employee_id) AS "ANZAHL"
 FROM employees e
   INNER JOIN departments d ON (d.department_id = e.department_id)
   INNER JOIN locations l ON (l.location_id = d.location_id)
