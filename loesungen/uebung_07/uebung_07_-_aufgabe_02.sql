@@ -1,8 +1,13 @@
+CREATE OR REPLACE VIEW "REPORT_72" AS
 SELECT
-  dep.department_id,
-  dep.department_name,
-  ROUND(NVL(AVG(emp.salary), 0), 2) avg_sal,
-  NTILE(3) OVER(ORDER BY AVG(emp.salary) nulls FIRST) class
-FROM departments dep
-  LEFT JOIN employees emp ON (dep.department_id = emp.department_id)
-GROUP BY department_id, dep.department_name;
+  d.department_id AS "DEPT_ID",
+  d.department_name AS "DEPT_NAME",
+  NVL(ROUND(AVG(e.salary),2),0) AS "AVG_SAL",
+  NTILE(3) OVER(ORDER BY AVG(e.salary) NULLS FIRST) AS "CLASS"
+FROM departments d
+  INNER JOIN employees e ON (e.department_id = d.department_id)
+GROUP BY
+  d.department_id,
+  d.department_name
+ORDER BY
+  "CLASS";

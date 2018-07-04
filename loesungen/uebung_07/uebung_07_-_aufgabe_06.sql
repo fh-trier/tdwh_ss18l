@@ -1,6 +1,7 @@
+CREATE OR REPLACE VIEW "REPORT_76" AS
 SELECT *
 FROM (
-  SELECT 
+  SELECT
     product_id,
     product_name,
     anzahl,
@@ -9,7 +10,7 @@ FROM (
     SELECT
       pi.product_id,
       pi.product_name,
-      ct.parent_category_id, 
+      ct.parent_category_id,
       SUM(oi.quantity) AS "ANZAHL"
     FROM order_items oi
       INNER JOIN product_information pi ON (pi.product_id = oi.product_id)
