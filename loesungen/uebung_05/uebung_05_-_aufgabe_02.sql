@@ -4,7 +4,7 @@
 -- Trigger, der die Tabelle REPORT_52
 -- aktualisiert, wenn ein neuer Datensatz
 -- in der Tabelle FACTS geschrieben wird.
-CREATE OR REPLACE VIEW "REPORT_52" AS
+CREATE OR REPLACE VIEW "TDWH_05_02" AS
   SELECT
     dd.yearnumber,
     dd.quarter,
@@ -24,14 +24,14 @@ CREATE OR REPLACE VIEW "REPORT_52" AS
 
 -- SELECT
 SELECT *
-FROM report_52
+FROM "TDWH_05_02"
 ORDER BY yearnumber, quarter, employee, subcategory_name;
 
 -- TRIGGER
 -- Falls anstatt von einer View eine Tabelle
 -- genutzt wird, muss der folgende Trigger
 -- implementiert werden.
-CREATE OR REPLACE TRIGGER "REPORT_52_TRG"
+CREATE OR REPLACE TRIGGER "TDWH_05_02_TRG"
 AFTER INSERT ON "FACTS"
 FOR EACH ROW
 DECLARE
