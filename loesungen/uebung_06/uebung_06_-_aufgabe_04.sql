@@ -1,6 +1,6 @@
 -- Pivot Tabellen müssen immer als
 -- eigene SELECT-Abfrage geschatet werden.
-CREATE OR REPLACE VIEW "REPORT_64" AS
+CREATE OR REPLACE VIEW "TDWH_06_04" AS
 SELECT *
 FROM (
   SELECT

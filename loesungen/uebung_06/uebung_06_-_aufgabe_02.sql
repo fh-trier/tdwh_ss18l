@@ -1,5 +1,5 @@
 -- GROUPING SETS
-CREATE OR REPLACE VIEW "REPORT_62" AS
+CREATE OR REPLACE VIEW "TDWH_06_02" AS
 SELECT
   DECODE(GROUPING(l.city), 1, '-all', l.city) AS "CITY",
   DECODE(GROUPING(d.department_name ), 1, '-all', d.department_name) AS "DEPARTMENT",

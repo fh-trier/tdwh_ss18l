@@ -2,7 +2,7 @@
 -- Falls keine Datensätze ausgegeben werden liegt das wahrscheinlich daran,
 -- dass durch die Datei oehr_dwhSS18.sql nur das kleine DWH-Schema importiert wurde.
 -- Erzeuge zur Lösung Synonyme oder Views die auf das DWH-Schema referenzieren!
-CREATE OR REPLACE VIEW "REPORT_63" AS
+CREATE OR REPLACE VIEW "TDWH_06_03" AS
 SELECT
   EXTRACT(YEAR FROM o.order_date) AS "YEAR",
   co.country_name AS "COUNTRY",
