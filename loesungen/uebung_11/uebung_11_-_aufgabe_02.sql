@@ -1,4 +1,6 @@
+INSERT INTO "TDWH_11_01"
 SELECT
+  d.department_id,
   XMLELEMENT("department",
     XMLELEMENT("name",
       XMLATTRIBUTES(
@@ -14,3 +16,5 @@ SELECT
 FROM departments d
   INNER JOIN locations l ON (d.location_id = l.location_id)
   LEFT JOIN employees e ON (d.manager_id = e.employee_id);
+
+COMMIT;

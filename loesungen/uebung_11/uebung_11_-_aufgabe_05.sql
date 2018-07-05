@@ -1,25 +1,26 @@
+CREATE OR REPLACE VIEW "TDWH_11_05A" AS
 SELECT x.*
 FROM
-  dept_xml d,
-  XMLTABLE('/department' PASSING d.xmldata COLUMNS
-    deptno number path 'name/@deptno',
-    name varchar2(50) path 'name',
-    manager varchar2(15) path 'manager' default 'none',
-    city varchar2(25) path 'city'
+  tdwh_11_01 t,
+  XMLTABLE('/department' PASSING t.xmldata COLUMNS
+    "DEPT_NO" NUMBER PATH 'name/@deptno',
+    "DEPT_NAME" VARCHAR2(50) PATH 'name',
+    "MANAGER" VARCHAR2(15) PATH 'manager' DEFAULT 'none',
+    "CITY" VARCHAR2(25) PATH 'city'
   ) x;
 
 
 -- Table of XMLType
-CREATE TABLE xml_test OF XMLTYPE;
+CREATE TABLE "TDWH_11_05B" OF XMLTYPE;
 
 -- INSERT
-INSERT INTO xml_test
+INSERT INTO "TDWH_11_05B"
   SELECT
     XMLELEMENT("department",
       XMLELEMENT(
         "name",
         XMLATTRIBUTES(d.department_id AS "deptno"),
-        department_name
+        d.department_name
       ),
       XMLFOREST(
         e.last_name AS "manager",

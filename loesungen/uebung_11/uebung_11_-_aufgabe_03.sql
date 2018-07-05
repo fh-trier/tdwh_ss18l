@@ -1,3 +1,3 @@
-SELECT deptno
-FROM dept_xml
-WHERE XMLEXISTS('/department/manager' PASSING XMLDATA);
+SELECT t.deptno
+FROM TDWH_11_01 t
+WHERE NOT XMLEXISTS('/department/manager' PASSING XMLDATA)
