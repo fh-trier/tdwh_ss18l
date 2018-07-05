@@ -1,6 +1,6 @@
-DROP TABLE "REPORT_93";
+DROP TABLE "TDWH_09_3";
 
-CREATE TABLE "REPORT_93" (
+CREATE TABLE "TDWH_09_03" (
   order_id NUMBER(8),
   order_date DATE,
   order_status NUMBER(2)
@@ -23,6 +23,3 @@ ORGANIZATION EXTERNAL(
   LOCATION('orders.csv')
 )
 REJECT LIMIT UNLIMITED;
-
-SELECT *
-FROM report_93;
