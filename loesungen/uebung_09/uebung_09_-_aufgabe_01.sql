@@ -1,6 +1,6 @@
-DROP TABLE orders_ext;
+DROP TABLE "REPORT_91";
 
-CREATE TABLE orders_ext (
+CREATE TABLE "REPORT_91" (
   order_id NUMBER(8),
   order_date DATE,
   channel_id NUMBER(8),
@@ -9,15 +9,18 @@ CREATE TABLE orders_ext (
   sales_rep_id NUMBER(4),
   product_id NUMBER(4),
   line_item_id NUMBER(2),
-  quantity NUMBER(3) )
-ORGANIZATION EXTERNAL
-(
-  DEFAULT DIRECTORY student_dir
-  ACCESS PARAMETERS (
-    RECORDS DELIMITED BY newline
-    NOBADFILE NOLOGFILE NODISCARDFILE
+  quantity NUMBER(3)
+)
+ORGANIZATION EXTERNAL(
+  DEFAULT DIRECTORY "STUDENT_DIR"
+  ACCESS PARAMETERS(
+    RECORDS DELIMITED BY NEWLINE
+    NOBADFILE
+    NOLOGFILE
+    NODISCARDFILE
     FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '"'
-    MISSING FIELD VALUES ARE NULL (
+    MISSING FIELD VALUES ARE NULL
+    (
       order_id,
       order_date DATE 'DD.MM.YYYY HH24:MI:SS',
       channel_id,
@@ -29,6 +32,9 @@ ORGANIZATION EXTERNAL
       quantity
     )
   )
-  LOCATION ('orders.csv')
+  LOCATION('orders.csv')
 )
 REJECT LIMIT UNLIMITED;
+
+SELECT *
+FROM report_91;
