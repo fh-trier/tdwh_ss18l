@@ -1,13 +1,14 @@
-SELECT 
+CREATE OR REPLACE VIEW "TDWH_10_01B" AS
+SELECT
   jt.*
-FROM 
-  weborders, 
-  JSON_TABLE(jsonord, '$' COLUMNS
-    "FIRST" VARCHAR2(30) PATH '$.firstname',
-    "LAST" VARCHAR2(30) PATH '$.lastname',
-    "GEND" VARCHAR2(30) PATH '$.gender',
-    "PHONE" VARCHAR2(30) PATH '$.phone',
-    "REGISTERED" VARCHAR2(30) PATH '$.registered'
-  ) jt
-WHERE SUBSTR("REGISTERED", 0, 4) = '2014';
-
+FROM
+  weborders w,
+  JSON_TABLE(
+    w.JSONORD, '$' COLUMNS (
+      "FIRST" VARCHAR2(30) PATH '$.firstname',
+      "LAST" VARCHAR2(30) PATH '$.lastname',
+      "GENDER" VARCHAR2(30) PATH '$.gender',
+      "PHONE" VARCHAR2(30) PATH '$.phone',
+      "REGISTRED" VARCHAR2(30) PATH '$.registered'
+    )
+  ) jt;

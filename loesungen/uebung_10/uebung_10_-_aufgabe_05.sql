@@ -1,14 +1,22 @@
+CREATE OR REPLACE VIEW "TDWH_10_05" AS
 SELECT
-  m.firstname,
-  m.lastname,
-  COUNT(m.quant)
+  jt.firstname AS "FIRSTNAME",
+  jt.lastname AS "LASTNAME",
+  COUNT(jt.quantity) AS "ORDERS"
 FROM
-  weborders,
-  JSON_TABLE(jsonord, '$' COLUMNS
-    firstname VARCHAR2(30) PATH '$.firstname',
-    lastname VARCHAR2(30) PATH '$.lastname',
-    NESTED PATH '$.items[*]' COLUMNS (
-      quant NUMBER(8) PATH '$.quantity'
+  weborders w,
+  JSON_TABLE(
+    w.JSONORD, '$' COLUMNS (
+      "FIRSTNAME" VARCHAR2(30) PATH '$.firstname',
+      "LASTNAME" VARCHAR2(30) PATH '$.lastname',
+      NESTED PATH '$.items[*]' COLUMNS (
+        "QUANTITY" VARCHAR2(30) PATH '$.quantity'
+      )
     )
-  ) m
-GROUP BY firstname, lastname;
+  ) jt
+GROUP BY
+  jt.firstname,
+  jt.lastname
+ORDER BY
+  jt.firstname,
+  jt.lastname;
