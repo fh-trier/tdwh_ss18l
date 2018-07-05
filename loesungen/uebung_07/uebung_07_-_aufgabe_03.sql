@@ -3,7 +3,7 @@
 -- dann liegt es höchst wahrscheinlich daran,
 -- dass das geladene Schema (oherSS18.sql) nur
 -- eine abgespreckte Datenmenge besitzt.
-
+CREATE OR REPLACE VIEW "TDWH_07_03" AS
 SELECT *
 FROM (
   SELECT
@@ -24,4 +24,4 @@ FROM (
     ct2.category_name,
     ct1.category_name
 )
-WHERE rang <= 4 ASC;
+WHERE rang <= 4;

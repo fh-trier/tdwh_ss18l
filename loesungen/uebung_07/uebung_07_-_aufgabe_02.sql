@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW "REPORT_72" AS
+CREATE OR REPLACE VIEW "TDWH_07_02" AS
 SELECT
   d.department_id AS "DEPT_ID",
   d.department_name AS "DEPT_NAME",
