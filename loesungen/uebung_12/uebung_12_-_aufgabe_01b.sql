@@ -1,2 +1,2 @@
-SELECT COUNT(DISTINCT(cust_id))
-FROM salesExternal;
+SELECT COUNT(DISTINCT(t.cust_id))
+FROM tdwh_12_01 t;

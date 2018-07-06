@@ -1,7 +1,7 @@
 SELECT COUNT(*)
 FROM (
-  SELECT cust_id
-  FROM sales_external
-  GROUP BY cust_id
-  HAVING COUNT(*) > 1
+  SELECT COUNT(*)
+  FROM tdwh_12_01 t
+  GROUP BY t.cust_id
+  HAVING COUNT(*) >= 2
 );

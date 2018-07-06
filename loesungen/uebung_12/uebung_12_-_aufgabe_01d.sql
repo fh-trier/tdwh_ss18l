@@ -1,22 +1,22 @@
 SELECT *
 FROM (
   SELECT
-    prod_id,
+    t.prod_id AS "PRODUCT_ID",
     SUM(
-      NVL(amount_sold,0) +
-      NVL(amount_sold1,0) +
-      NVL(amount_sold2,0) +
-      NVL(amount_sold3,0)
-    ) umsatz,
+      NVL(t.quantity_sold0, 0) * NVL(t.amount_sold0, 0) +
+      NVL(t.quantity_sold1, 0) * NVL(t.amount_sold1, 0) +
+      NVL(t.quantity_sold2, 0) * NVL(t.amount_sold2, 0) +
+      NVL(t.quantity_sold3, 0) * NVL(t.amount_sold3, 0)
+    ) AS "UMSATZ",
     RANK() OVER(
       ORDER BY SUM(
-        NVL(amount_sold,0) +
-        NVL(amount_sold1,0) +
-        NVL(amount_sold2,0) +
-        NVL(amount_sold3,0)
-      )
-    ) rang
-  FROM salesExternal
-  GROUP BY prod_id
+        NVL(t.quantity_sold0, 0) * NVL(t.amount_sold0, 0) +
+        NVL(t.quantity_sold1, 0) * NVL(t.amount_sold1, 0) +
+        NVL(t.quantity_sold2, 0) * NVL(t.amount_sold2, 0) +
+        NVL(t.quantity_sold3, 0) * NVL(t.amount_sold3, 0)
+      ) ASC
+    ) AS "RANG"
+  FROM tdwh_12_01 t
+  GROUP BY t.prod_id
 )
-WHERE rang < 3;
+WHERE rang <= 2;

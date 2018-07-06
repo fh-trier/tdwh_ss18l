@@ -1,16 +1,20 @@
+CREATE OR REPLACE VIEW "TDWH_12_02" AS
 SELECT
-  j.country,
-  j.city,
-  SUM(j.quantity * j.price) sales_city,
-  AVG(SUM(j.quantity*j.price)) OVER(PARTITION BY j.country) avg_sales_country
+  jt.country,
+  jt.city,
+  SUM(jt.quantity * jt.unit_price) AS "UMSATZ",
+  AVG(SUM(jt.quantity * jt.unit_price)) OVER (PARTITION BY jt.country) AS "AVG_COUNTRY"
 FROM
-  meurerm.orders_json,
-  JSON_TABLE(json_content,  '$' COLUMNS(
-    country VARCHAR2(50) PATH '$.ShippingInstructions.Address.country',
-    city VARCHAR2(50) PATH '$.ShippingInstructions.Address.city',
-    NESTED PATH '$.LineItems[*]' COLUMNS(
-      quantity NUMBER(5,4) PATH '$.Quantity',
-      price NUMBER(5,2) PATH '$.Part.UnitPrice')
-  )
-) j
-GROUP BY j.country, j.city;
+  orders_json oj,
+  JSON_TABLE(
+    oj.json_content,
+    '$' COLUMNS (
+      "COUNTRY" VARCHAR2(30) PATH '$.ShippingInstructions.Address.country',
+      "CITY" VARCHAR2(30) PATH '$.ShippingInstructions.Address.city',
+      NESTED PATH '$.LineItems[*]' COLUMNS (
+        "QUANTITY" VARCHAR2(30) PATH '$.Quantity',
+        "UNIT_PRICE" NUMBER(8,2) PATH '$.Part.UnitPrice'
+      )
+    )
+  ) jt
+GROUP BY jt.country, jt.city;

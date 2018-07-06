@@ -1,64 +1,84 @@
-DROP function tf_emp;
-DROP TYPE ntt_emp;
-DROP TYPE o_emp;
+DROP function tdwh_12_10a_func;
+DROP TYPE tdwh_12_10a_nt;
+DROP TYPE tdwh_12_10a_ob;
 
-CREATE TYPE o_emp AS object
+CREATE TYPE tdwh_12_10a_ob AS object
 (
-  emp_id NUMBER,
-  emp VARCHAR2(255),
-  count_orders NUMBER,
-  max_sales NUMBER,
-  depid NUMBER,
-  dep VARCHAR2(255),
-  count_emp_dep NUMBER
+  "EMP_ID" NUMBER,
+  "EMP_NAME" VARCHAR2(255),
+  "COUNT_ORDERS" NUMBER,
+  "MAX_SALES" NUMBER,
+  "DEPT_ID" NUMBER,
+  "DEPT_NAME" VARCHAR2(255),
+  "COUNT_EMP_DEPT" NUMBER
 );
 /
 
-CREATE TYPE ntt_emp AS TABLE OF o_emp;
+CREATE TYPE tdwh_12_10a_nt AS TABLE OF tdwh_12_10a_ob;
 /
 
-CREATE OR REPLACE function tf_emp RETURN ntt_emp
+CREATE OR REPLACE FUNCTION tdwh_12_10a_func RETURN tdwh_12_10a_nt
 IS
-  nt_emp ntt_emp := ntt_emp();
-  v_count_orders NUMBER;
-  v_max_sales NUMBER;
-  v_dep VARCHAR2(255);
-  v_count_emp_dep NUMBER;
+  ntEmployee tdwh_12_10a_nt := tdwh_12_10a_nt();
+  vCountOrders NUMBER;
+  vMaxSales NUMBER;
+  vDeptName VARCHAR2(255);
+  vCountEmpDept NUMBER;
 BEGIN
   FOR rec IN (
     SELECT
-      employee_id,
-      first_name,
-      last_name,
-      department_id
-    FROM employees)
+      e.employee_id,
+      e.first_name,
+      e.last_name,
+      e.department_id
+    FROM employees e
+  )
   LOOP
+    -- Max Bestellumsatz
     SELECT
-      COUNT(*),
-      MAX(order_total)
+      NVL(MAX(o.order_total),0)
     INTO
-      v_count_orders,
-      v_max_sales
-    FROM orders
-    WHERE sales_rep_id = rec.employee_id;
+      vMaxSales
+    FROM orders o
+    WHERE o.sales_rep_id = rec.employee_id;
 
-    SELECT department_name INTO v_dep
-    FROM departments
-    WHERE department_id = rec.department_id;
+    -- Anzahl Bestellungen
+    SELECT
+      COUNT(*)
+    INTO
+      vCountOrders
+    FROM orders o
+    WHERE o.sales_rep_id = rec.employee_id;
 
-    SELECT COUNT(*) INTO v_count_emp_dep
-    FROM employees
-    WHERE department_id = rec.department_id;
+    -- Department
+    SELECT d.department_name INTO vDeptName
+    FROM departments d
+    WHERE d.department_id = rec.department_id;
 
-    nt_emp.extend();
-    nt_emp(nt_emp.lASt) := o_emp(rec.employee_id,
-      rec.first_name || ' ' || rec.lASt_name, v_count_orders,
-      v_max_sales, rec.department_id, v_dep, v_count_emp_dep);
+    -- Anzahl Mitarbeiter im Department
+    SELECT COUNT(*) INTO vCountEmpDept
+    FROM employees e
+    WHERE e.department_id = rec.department_id;
+
+    DBMS_OUTPUT.PUT_LINE(' ' || ntEmployee.LAST);
+
+    ntEmployee.EXTEND();
+    ntEmployee(ntEmployee.LAST) := tdwh_12_10a_ob(
+      rec.employee_id,
+      rec.first_name || ' ' || rec.last_name,
+      vCountOrders,
+      vMaxSales,
+      rec.department_id,
+      vDeptName,
+      vCountEmpDept
+    );
   END LOOP;
 
-  RETURN nt_emp;
+  RETURN ntEmployee;
 END;
 /
 
+SET SERVEROUTPUT ON;
+
 SELECT *
-FROM TABLE(tf_emp);
+FROM TABLE(tdwh_12_10a_func());

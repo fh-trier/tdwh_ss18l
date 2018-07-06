@@ -1,32 +1,48 @@
-DROP TABLE salesExternal;
+DROP TABLE "TDWH_12_01";
 
-CREATE TABLE salesExternal(
-  PROD_ID           INTEGER,
-  CUST_ID           INTEGER,
-  TIME_ID           DATE,
-  CHANNEL_ID        CHAR(1),
-  PROMO_ID          INTEGER,
-  QUANTITY_SOLD     INTEGER,
-  AMOUNT_SOLD       NUMBER(10,2),
-  QUANTITY_SOLD1    INTEGER,
-  AMOUNT_SOLD1      NUMBER(10,2),
-  QUANTITY_SOLD2    INTEGER,
-  AMOUNT_SOLD2      NUMBER(10,2),
-  QUANTITY_SOLD3    INTEGER,
-  AMOUNT_SOLD3      NUMBER(10,2)
+CREATE TABLE "TDWH_12_01" (
+  "PROD_ID" INTEGER,
+  "CUST_ID" INTEGER,
+  "TIME_ID" DATE,
+  "CHANNEL_ID" CHAR(1),
+  "PROMO_ID" INTEGER,
+  "QUANTITY_SOLD0" INTEGER,
+  "AMOUNT_SOLD0" NUMBER(10,2),
+  "QUANTITY_SOLD1" INTEGER,
+  "AMOUNT_SOLD1" NUMBER(10,2),
+  "QUANTITY_SOLD2" INTEGER,
+  "AMOUNT_SOLD2" NUMBER(10,2),
+  "QUANTITY_SOLD3" INTEGER,
+  "AMOUNT_SOLD3" NUMBER(10,2)
 )
 ORGANIZATION EXTERNAL(
-  TYPE oracle_loader
-  DEFAULT directory student_dir
+  DEFAULT DIRECTORY "STUDENT_DIR"
   ACCESS PARAMETERS(
     RECORDS DELIMITED BY NEWLINE
-    NOBADFILE NOLOGFILE NODISCARDFILE
-    FIELDS TERMINATED BY ';'
+    NOBADFILE
+    NOLOGFILE
+    NODISCARDFILE
+    FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '"'
     MISSING FIELD VALUES ARE NULL
+    (
+      prod_id,
+      cust_id,
+      time_id DATE "DD.MON.RR",
+      channel_id,
+      promo_id,
+      quantity_sold0,
+      amount_sold0,
+      quantity_sold1,
+      amount_sold1,
+      quantity_sold2,
+      amount_sold2,
+      quantity_sold3,
+      amount_sold3
+    )
   )
-  LOCATION ('sales4.dat')
+  LOCATION('sales4.dat')
 )
 REJECT LIMIT UNLIMITED;
 
 SELECT *
-FROM salesExternal;
+FROM tdwh_12_01;
