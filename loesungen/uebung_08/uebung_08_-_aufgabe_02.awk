@@ -8,7 +8,7 @@ FNR >= 2{
   if (minCust > $5){
     minCust = $5;
   }
-  sumBest += $6;
+  sumBest += $5;
 }
 
 END{

@@ -9,6 +9,6 @@ FROM (
     TO_CHAR(o.order_date, 'YYYY-MM') AS "MONAT",
     SUM(o.order_total) AS "UMSATZ"
   FROM orders o
-  WHERE EXTRACT(YEAR FROM o.order_date) = '2007'
+  WHERE EXTRACT(YEAR FROM o.order_date) = '2015'
   GROUP BY TO_CHAR(o.order_date, 'YYYY-MM')
 ) sq;

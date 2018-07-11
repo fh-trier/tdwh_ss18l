@@ -1,25 +1,46 @@
-#!/usr/bin/env awk
+#!/bin/awk
 
 BEGIN {
-  OFS = ",";  # OutputFieldSeperator
+  # Set output field seperator
+  OFS=",";
 }
 
-FNR > 1{
-  $2 = toupper(substr($2,1,1)) tolower(substr($2,2));
-  $3 = toupper(substr($3,1,1)) tolower(substr($3,2));
-  hour = substr($1, 1, match($1, /:/)-1);
+function changeTime(inTime){
+  # Split inTime into an array
+  split(inTime, vTime, ":")
+  vHour = vTime[1];
+  vMin = vTime[2];
 
-  if($1 ~ /PM$/ && hour != 12) {
-    $1 = hour + 12 substr($1, match($1,/:/), 6);
+  # Split vTime[3] into an array
+  # to split between seconds and time interval
+  split(vTime[3], vSecondOrTimeInterval, " " )
+  vSec = vSecondOrTimeInterval[1];
+  vTimeIntervall = vSecondOrTimeInterval[2];
+
+  # Add 12 hours for a PM time interval
+  if (vTimeIntervall == "PM"){
+    vHour+= 12;
   }
-  else if ($1 ~ /PM$/ && hour == 12) {
-    $1 = 0 substr($1, match($1,/:/), 6);
-  }
-  else {
-    $1 = substr($1,1,length($1)-3);
-  }
+
+  # return the new time format
+  return vHour ":" vMin ":" vSec;
 }
 
 {
-  print $0;
+  # check constraints
+  if (length($8) > 0 ||
+    $2 !~ /[A-Za-z]+/ ||
+    $3 !~ /[A-Za-z]+/ ||
+    $1 !~ /^([1-9]|1[0-2]):[0-5][0-9]:[0-5][0-9]\ (AM|PM)$/) {
+    # write line into file
+    print $0 > "error_cust_data";
+  }
+  else {
+    # overide old with new time format
+    $1 = changeTime($1);
+
+    # print line on stdout
+    print $0;
+  }
+
 }
