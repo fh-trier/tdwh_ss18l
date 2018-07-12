@@ -2,30 +2,31 @@ CREATE OR REPLACE VIEW "TDWH_10_04" AS
 SELECT *
 FROM (
   SELECT
-    "FIRSTNAME" || ' ' || "LASTNAME" AS "NAME",
+    firstname,
+    lastname,
     SUBSTR(registered, 0, 7) AS "MONTH",
-    SUM(quantity) AS "QUANT_PER_CUST",
-    RANK() OVER(PARTITION BY SUBSTR("REGISTERED", 0, 7) ORDER BY SUM(quantity) DESC) AS "RANG"
+    SUM(quantity) AS "QUANTPERCUST",
+    RANK() OVER (PARTITION BY (SUBSTR(registered, 0, 7)) ORDER BY (SUM(quantity)) DESC) AS "RANG"
   FROM (
-    SELECT jt.*
+    SELECT
+      jt.*
     FROM
       weborders w,
       JSON_TABLE(
-        w.JSONORD, '$' COLUMNS (
+        w.jsonord, '$' COLUMNS(
           "FIRSTNAME" VARCHAR2(30) PATH '$.firstname',
           "LASTNAME" VARCHAR2(30) PATH '$.lastname',
-          "PHONE" VARCHAR2(30) PATH '$.phone',
           "REGISTERED" VARCHAR(30) PATH '$.registered',
-          NESTED PATH '$.items[*]' COLUMNS(
-            "PROD_ID" VARCHAR2(30) PATH '$.product_id',
+          NESTED PATH '$.items[*]' COLUMNS (
             "QUANTITY" VARCHAR2(30) PATH '$.quantity'
           )
         )
       ) jt
   )
   GROUP BY
-    "FIRSTNAME" || ' ' || "LASTNAME",
+    firstname,
+    lastname,
     SUBSTR(registered, 0, 7)
 )
-WHERE "RANG" <= 2
+WHERE rang <= 2
 AND SUBSTR("MONTH", 0, 4) = '2015';

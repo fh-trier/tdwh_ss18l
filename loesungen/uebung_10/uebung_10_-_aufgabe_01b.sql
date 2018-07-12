@@ -3,12 +3,12 @@ SELECT
   jt.*
 FROM
   weborders w,
-  JSON_TABLE(
-    w.JSONORD, '$' COLUMNS (
+  JSON_TABLE(w.jsonord, '$' COLUMNS(
       "FIRST" VARCHAR2(30) PATH '$.firstname',
       "LAST" VARCHAR2(30) PATH '$.lastname',
       "GENDER" VARCHAR2(30) PATH '$.gender',
-      "PHONE" VARCHAR2(30) PATH '$.phone',
-      "REGISTRED" VARCHAR2(30) PATH '$.registered'
+      "PHONE" VARCHAR(30) PATH '$.phone',
+      "REGISTERED" VARCHAR(30) PATH '$.registered'
     )
-  ) jt;
+  ) jt
+WHERE SUBSTR(jt.registered, 0, 4) = '2014';

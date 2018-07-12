@@ -5,4 +5,4 @@ SELECT
   JSON_VALUE(w.jsonord, '$.gender') AS "GENDER",
   JSON_VALUE(w.jsonord, '$.phone') AS "PHONE"
 FROM weborders w
-WHERE SUBSTR(JSON_VALUE(w.jsonord, '$.registered'),0,4) = '2014';
+WHERE SUBSTR(JSON_VALUE(w.jsonord, '$.registered'), 0, 4) = '2014';
