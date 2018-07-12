@@ -1,15 +1,15 @@
-DROP TABLE "TDWH_09_01";
+DROP TABLE "TDWH_09_01" CASCADE CONSTRAINTS PURGE;
 
 CREATE TABLE "TDWH_09_01" (
-  order_id NUMBER(8),
-  order_date DATE,
-  channel_id NUMBER(8),
-  customer_id NUMBER(8),
-  order_status NUMBER(2),
-  sales_rep_id NUMBER(4),
-  product_id NUMBER(4),
-  line_item_id NUMBER(2),
-  quantity NUMBER(3)
+  "ORDER_ID" NUMBER(8),
+  "ORDER_DATE" DATE,
+  "CHANNEL_ID" NUMBER(8),
+  "CUSTOMER_ID" NUMBER(8),
+  "ORDER_STATUS" NUMBER(2),
+  "SALES_REP_ID" NUMBER(4),
+  "PRODUCT_ID" NUMBER(4),
+  "LINE_ITEM_ID" NUMBER(2),
+  "QUANTITY" NUMBER(3)
 )
 ORGANIZATION EXTERNAL(
   DEFAULT DIRECTORY "STUDENT_DIR"
@@ -21,15 +21,16 @@ ORGANIZATION EXTERNAL(
     FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '"'
     MISSING FIELD VALUES ARE NULL
     (
-      order_id,
-      order_date DATE 'DD.MM.YYYY HH24:MI:SS',
-      channel_id,
-      customer_id,
-      order_status,
-      sales_rep_id,
-      product_id,
-      line_item_id,
-      quantity
+      "ORDER_ID",
+      "ORDER_DATE" DATE 'DD.MM.YYYY HH24:MI:SS',
+      "CHANNEL_ID",
+      "CUSTOMER_ID",
+      "ORDER_STATUS",
+      "SALES_REP_ID",
+      "PRODUCT_ID",
+      "LINE_ITEM_ID",
+      "QUANTITY"
+
     )
   )
   LOCATION('orders.csv')

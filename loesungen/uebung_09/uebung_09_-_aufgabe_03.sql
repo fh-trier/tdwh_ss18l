@@ -1,9 +1,9 @@
-DROP TABLE "TDWH_09_3";
+DROP TABLE "TDWH_09_03";
 
 CREATE TABLE "TDWH_09_03" (
-  order_id NUMBER(8),
-  order_date DATE,
-  order_status NUMBER(2)
+  "ORDER_ID" NUMBER(8),
+  "ORDER_DATE" DATE,
+  "ORDER_STATUS" NUMBER(2)
 )
 ORGANIZATION EXTERNAL(
   DEFAULT DIRECTORY "STUDENT_DIR"
@@ -15,9 +15,9 @@ ORGANIZATION EXTERNAL(
     FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '"'
     MISSING FIELD VALUES ARE NULL
     (
-      order_id,
-      order_date DATE 'DD.MM.YYYY HH24:MI:SS',
-      order_status
+      "ORDER_ID",
+      "ORDER_DATE" DATE 'DD.MM.YYYY HH24:MI:SS',
+      "ORDER_STATUS"
     )
   )
   LOCATION('orders.csv')
